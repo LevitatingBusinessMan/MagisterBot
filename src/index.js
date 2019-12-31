@@ -1,16 +1,16 @@
-console.log('\033[2J');
-const Discord = require('discord.js');
-const path = require('path');
-const fs = require('fs');
-const axios = require("axios");
-const { spawn } = require('child_process');
-const { PlayerManager } = require("discord.js-lavalink");
-const reload = require('require-reload')(require);
+const Discord = require('discord.js'),
+    path = require('path'),
+    fs = require('fs'),
+    axios = require("axios"),
+    { spawn } = require('child_process'),
+    reload = require('require-reload')(require),
+    server = require(path.join(__dirname, "server/server.js"))
 
 class Kirito extends Discord.Client {
     constructor() {
         super();
         this.Discord = Discord;
+        this.server = server;
         this.rootDir = path.join(__dirname, "..");
         this.debug = process.argv.includes('-debug');
         this.dev = process.argv.includes('-dev');
@@ -41,7 +41,10 @@ class Kirito extends Discord.Client {
             );
 
             this.loadUtilities();
+
+            //Initiate some maps
             this.savedMessages = new Map();
+            this.loginTokens = new Map();
 
             const spinner = require(path.join(__dirname, "./util/spinner.js"));
 
@@ -177,7 +180,8 @@ class Kirito extends Discord.Client {
             fs.readdirSync(path.join(__dirname, './commands', category)).forEach(file => {
                 count++;
                 try {
-                    var command = new (reload(path.join(__dirname, './commands', category, file)))();
+                    let command_ = reload(path.join(__dirname, './commands', category, file))
+                    var command = new command_();
                 } catch(e) {
                     this.logger.log('err', `Error loading command ${file}`);
                     if (this.debug)
@@ -243,35 +247,13 @@ class Kirito extends Discord.Client {
     userEntry(user) {
         return {
             id: user.id,
-            name: user.username,
-            bio: false,
-            whMessages: [],
-            points: 0
-        }
-    }
-
-    guildEntry(guild) {
-        return {
-            id: guild.id,
-            name: guild.name,
-            autoroles: [],
-            autoflip: false,
-            greeting: null,
-            farewell: null,
-            messageChannel: null,
-            wormholeChannel: null,
-            musicChannel: null,
-            prefix: null
+            name: user.username
         }
     }
 
     loadUtilities(){
         this.renderHelp = reload(path.join(__dirname, "./util/renderHelp.js"));
-        this.getImage = reload(path.join(__dirname, "./util/getImage.js"));
-        this.getUser = reload(path.join(__dirname, "./util/getUser.js"));
-        this.getSong = reload(path.join(__dirname, "./util/getSong.js"));
-        this.createPlayer = reload(path.join(__dirname, "./util/createPlayer.js"))
-        this.wait = (ms,fn)=>{let id=setInterval(()=>{clearInterval(id);fn();},ms)};
+        this.newID = reload(path.join(__dirname, "./util/newID.js"));
     }
 }
 

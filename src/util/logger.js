@@ -62,11 +62,11 @@ class Logger {
     }
 
     warn(msg) {
-        this.log("INFO",msg)
+        this.log("WARN",msg)
     }
 
     err(msg) {
-        this.log("INFO",msg)
+        this.log("ERR",msg)
     }
 
     /*

@@ -1,5 +1,4 @@
 module.exports = async function guildDelete (Kirito, [guild]) {
-    Kirito.guilds_.delete(guild.id);
 
     if (Kirito.config.logChannel)
         Kirito.channels.get(Kirito.config.logChannel).send('Left guild:', 
@@ -13,4 +12,5 @@ module.exports = async function guildDelete (Kirito, [guild]) {
         .setTimestamp(new Date())
         .setFooter(guild.owner.user.tag,guild.owner.user.avatarURL)
     );
+
 }

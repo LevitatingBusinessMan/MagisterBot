@@ -1,7 +1,4 @@
 module.exports = async function guildCreate (Kirito, [guild]) {
-    //Add new guild to DB
-    Kirito.guilds_.set(guild.id, Kirito.guildEntry(guild));
-
 
     if (Kirito.config.logChannel)
         Kirito.channels.get(Kirito.config.logChannel).send('Joined guild:', 
@@ -15,4 +12,5 @@ module.exports = async function guildCreate (Kirito, [guild]) {
         .setTimestamp(new Date())
         .setFooter(guild.owner.user.tag,guild.owner.user.avatarURL)
     );
+
 }
